@@ -1,0 +1,240 @@
+{
+  "name": "easy-notifyyy",
+  "displayName": "Easy Notifyyy - AI Task Email Notifier",
+  "description": "Get notified via email when Antigravity, GitHub Copilot, Claude, Kiro, or terminal tasks finish so you can walk away from your desk.",
+  "version": "0.1.1",
+  "publisher": "easy-notifyyy",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gcclinux/easy-notifyyy.git"
+  },
+  "categories": [
+    "Other",
+    "AI"
+  ],
+  "keywords": [
+    "ai",
+    "notifications",
+    "email",
+    "antigravity",
+    "copilot",
+    "claude",
+    "kiro",
+    "mcp"
+  ],
+  "engines": {
+    "vscode": "^1.93.0"
+  },
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "easy-notifyyy",
+          "title": "Easy Notifyyy",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "easy-notifyyy": [
+        {
+          "type": "webview",
+          "id": "easyNotifyyy.sidebarView",
+          "name": "Settings & Status"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "easyNotifyyy.openSettings",
+        "title": "Easy Notifyyy: Open Settings UI"
+      },
+      {
+        "command": "easyNotifyyy.toggleMode",
+        "title": "Easy Notifyyy: Switch Notification Mode (Away / Always / Muted)"
+      },
+      {
+        "command": "easyNotifyyy.setCredentials",
+        "title": "Easy Notifyyy: Configure Email Credentials (API Key / SMTP Password)"
+      },
+      {
+        "command": "easyNotifyyy.sendTestEmail",
+        "title": "Easy Notifyyy: Send Test Notification Email"
+      },
+      {
+        "command": "easyNotifyyy.setupAgentHooks",
+        "title": "Easy Notifyyy: Setup Agent Hooks & MCP (Antigravity, Claude, Kiro, Copilot)"
+      },
+      {
+        "command": "easyNotifyyy.notifyNow",
+        "title": "Easy Notifyyy: Trigger Notification Now"
+      }
+    ],
+    "configuration": {
+      "title": "Easy Notifyyy",
+      "properties": {
+        "easyNotifyyy.mode": {
+          "order": 1,
+          "type": "string",
+          "enum": [
+            "away",
+            "always",
+            "muted"
+          ],
+          "enumDescriptions": [
+            "Only send email when the IDE is unfocused or idle for longer than idleSeconds.",
+            "Always send email when an AI or long-running task finishes.",
+            "Disable all email notifications."
+          ],
+          "default": "away",
+          "markdownDescription": "When Easy Notifyyy should send email notifications.\n\n[⚙️ Open Visual Settings Dashboard](command:easyNotifyyy.openSettings) · [📨 Send Test Notification Email](command:easyNotifyyy.sendTestEmail)"
+        },
+        "easyNotifyyy.idleSeconds": {
+          "order": 2,
+          "type": "number",
+          "default": 60,
+          "minimum": 5,
+          "description": "Seconds of inactivity in the IDE before considering the user away (when mode is 'away')."
+        },
+        "easyNotifyyy.cooldownSeconds": {
+          "order": 3,
+          "type": "number",
+          "default": 30,
+          "minimum": 0,
+          "description": "Minimum seconds between consecutive email notifications to prevent inbox spam."
+        },
+        "easyNotifyyy.recipientEmail": {
+          "order": 4,
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Destination email address where AI task notifications are sent.\n\n[📨 Send Test Notification Email](command:easyNotifyyy.sendTestEmail)"
+        },
+        "easyNotifyyy.senderEmail": {
+          "order": 5,
+          "type": "string",
+          "default": "Easy Notifyyy <onboarding@resend.dev>",
+          "description": "From email address used when sending notifications."
+        },
+        "easyNotifyyy.emailProvider": {
+          "order": 6,
+          "type": "string",
+          "enum": [
+            "resend",
+            "smtp",
+            "webhook"
+          ],
+          "default": "resend",
+          "description": "Email delivery provider: Resend API, custom SMTP (Gmail/Outlook/etc.), or custom HTTP webhook."
+        },
+        "easyNotifyyy.resendApiKey": {
+          "order": 7,
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Resend API Key (starts with `re_...`). Alternatively, use the Visual Settings Dashboard to save it in OS Keychain.\n\n[📨 Click here to Send Test Notification Email](command:easyNotifyyy.sendTestEmail)"
+        },
+        "easyNotifyyy.smtp.host": {
+          "order": 8,
+          "type": "string",
+          "default": "smtp.gmail.com",
+          "description": "SMTP server hostname (used when emailProvider is 'smtp')."
+        },
+        "easyNotifyyy.smtp.port": {
+          "order": 9,
+          "type": "number",
+          "default": 587,
+          "description": "SMTP server port (587 for STARTTLS, 465 for implicit TLS)."
+        },
+        "easyNotifyyy.smtp.secure": {
+          "order": 10,
+          "type": "boolean",
+          "default": false,
+          "description": "Use implicit TLS for SMTP (true for port 465; false for 587 STARTTLS)."
+        },
+        "easyNotifyyy.smtp.user": {
+          "order": 11,
+          "type": "string",
+          "default": "",
+          "description": "SMTP username / email address (used when emailProvider is 'smtp')."
+        },
+        "easyNotifyyy.smtp.password": {
+          "order": 12,
+          "type": "string",
+          "default": "",
+          "markdownDescription": "SMTP password or Gmail App Password (for Gmail with 2FA, generate a 16-character App Password at myaccount.google.com/apppasswords).\n\n[📨 Click here to Send Test Notification Email](command:easyNotifyyy.sendTestEmail)"
+        },
+        "easyNotifyyy.webhookUrl": {
+          "order": 13,
+          "type": "string",
+          "default": "",
+          "description": "Webhook URL to POST JSON notifications to (used when emailProvider is 'webhook')."
+        },
+        "easyNotifyyy.includeSummary": {
+          "order": 14,
+          "type": "boolean",
+          "default": true,
+          "description": "Include AI message summary in notification emails. Disable for sensitive codebases."
+        },
+        "easyNotifyyy.serverPort": {
+          "order": 15,
+          "type": "number",
+          "default": 47831,
+          "description": "Localhost HTTP/MCP server port for agent hooks and MCP tool calls."
+        },
+        "easyNotifyyy.minTerminalDurationSeconds": {
+          "order": 16,
+          "type": "number",
+          "default": 15,
+          "minimum": 1,
+          "description": "Minimum terminal command duration in seconds before triggering a completion notification."
+        },
+        "easyNotifyyy.detectors.antigravity": {
+          "order": 17,
+          "type": "boolean",
+          "default": true,
+          "description": "Watch Antigravity transcript logs for turn completion or user input requests."
+        },
+        "easyNotifyyy.detectors.copilot": {
+          "order": 18,
+          "type": "boolean",
+          "default": true,
+          "description": "Watch IDE chat session files (GitHub Copilot / Cursor) for completed responses."
+        },
+        "easyNotifyyy.detectors.claudeAndKiro": {
+          "order": 19,
+          "type": "boolean",
+          "default": true,
+          "description": "Accept Stop and Notification hook payloads from Claude Code and Kiro on the local server."
+        },
+        "easyNotifyyy.detectors.terminal": {
+          "order": 20,
+          "type": "boolean",
+          "default": true,
+          "description": "Notify when long-running terminal commands complete."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "npx tsx --test src/test/*.test.ts",
+    "package:vsix": "npx --yes @vscode/vsce package --no-dependencies --allow-missing-repository"
+  },
+  "dependencies": {
+    "nodemailer": "^6.10.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/nodemailer": "^6.4.17",
+    "@types/vscode": "^1.93.0",
+    "esbuild": "^0.24.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
