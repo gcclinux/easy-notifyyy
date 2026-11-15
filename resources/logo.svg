@@ -1,0 +1,55 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="20" y1="16" x2="236" y2="240" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="55%" stop-color="#171E42"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <radialGradient id="glowGrad" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(124 114) rotate(90) scale(104)">
+      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.22"/>
+      <stop offset="65%" stop-color="#6366F1" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#0F172A" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="bellGrad" x1="122" y1="54" x2="122" y2="188" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FDE68A"/>
+      <stop offset="42%" stop-color="#FBBF24"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+    <linearGradient id="badgeGrad" x1="150" y1="142" x2="218" y2="210" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#2563EB"/>
+    </linearGradient>
+    <linearGradient id="sparkGrad" x1="176" y1="40" x2="214" y2="78" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#F8FAFC"/>
+      <stop offset="100%" stop-color="#C4B5FD"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Squircle Container -->
+  <rect x="12" y="12" width="232" height="232" rx="52" fill="url(#bgGrad)"/>
+  <rect x="12" y="12" width="232" height="232" rx="52" fill="url(#glowGrad)"/>
+  <rect x="13.5" y="13.5" width="229" height="229" rx="50.5" stroke="#94A3B8" stroke-opacity="0.2" stroke-width="3"/>
+
+  <!-- Subtle Notification Sound Waves -->
+  <path d="M58 92C49 103 49 125 58 136" stroke="#FBBF24" stroke-opacity="0.55" stroke-width="6" stroke-linecap="round"/>
+  <path d="M42 80C28 98 28 130 42 148" stroke="#FBBF24" stroke-opacity="0.28" stroke-width="5.5" stroke-linecap="round"/>
+  <path d="M186 92C195 103 195 125 186 136" stroke="#FBBF24" stroke-opacity="0.55" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- Bell Clapper -->
+  <path d="M103 176C106 187 113.5 194 122 194C130.5 194 138 187 141 176H103Z" fill="#B45309"/>
+
+  <!-- Notification Bell -->
+  <path d="M122 50C127.5 50 132 54.5 132 60V63.5C153.5 68 168 87 168 110V136C168 144.5 171.5 152.5 177.5 158.3L182.2 162.8C186.6 167 183.6 174.5 177.5 174.5H66.5C60.4 174.5 57.4 167 61.8 162.8L66.5 158.3C72.5 152.5 76 144.5 76 136V110C76 87 90.5 68 112 63.5V60C112 54.5 116.5 50 122 50Z" fill="url(#bellGrad)"/>
+  <!-- Bell Highlight -->
+  <path d="M96 86C91 93 88.5 102 88.5 112V135" stroke="#FEF3C7" stroke-opacity="0.55" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- AI Sparkle Accent (Upper Right) -->
+  <path d="M194 40L199.5 54.5L214 60L199.5 65.5L194 80L188.5 65.5L174 60L188.5 54.5L194 40Z" fill="url(#sparkGrad)"/>
+  <circle cx="164" cy="48" r="3.5" fill="#A5B4FC" fill-opacity="0.8"/>
+
+  <!-- Email Badge (Bottom Right) -->
+  <circle cx="184" cy="176" r="38" fill="#0F172A"/>
+  <circle cx="184" cy="176" r="33" fill="url(#badgeGrad)"/>
+  <rect x="163" y="161" width="42" height="30" rx="5.5" stroke="#FFFFFF" stroke-width="3.6" fill="none"/>
+  <path d="M165.5 164L184 178L202.5 164" stroke="#FFFFFF" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

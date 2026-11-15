@@ -2,9 +2,18 @@
   "name": "easy-notifyyy",
   "displayName": "Easy Notifyyy - AI Task Email Notifier",
   "description": "Get notified via email when Antigravity, GitHub Copilot, Claude, Kiro, or terminal tasks finish so you can walk away from your desk.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "easy-notifyyy",
   "license": "MIT",
+  "icon": "resources/logo.png",
+  "galleryBanner": {
+    "color": "#0f172a",
+    "theme": "dark"
+  },
+  "homepage": "https://github.com/gcclinux/easy-notifyyy#readme",
+  "bugs": {
+    "url": "https://github.com/gcclinux/easy-notifyyy/issues"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/gcclinux/easy-notifyyy.git"
