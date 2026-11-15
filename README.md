@@ -28,6 +28,10 @@ Easy Notifyyy runs inside **Antigravity IDE**, **VS Code (GitHub Copilot)**, **K
 
 ---
 
+## Screenshot at a glance
+
+![Screenshot](./screentshot.png)
+
 ## Gmail App Password Setup (SMTP)
 
 If your sender Gmail account has **2-Step Verification** enabled, Google rejects normal account passwords over SMTP with `534-5.7.9 Application-specific password required`. Generate a **Google App Password** instead:
