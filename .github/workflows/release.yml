@@ -23,4 +23,8 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run package:vsix -- --out easy-notifyyy.vsix
+      - name: Debug OIDC claims (temporary)
+        run: |
+          t=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=https://open-vsx.org" | node -e "let b='';process.stdin.on('data',c=>b+=c).on('end',()=>process.stdout.write(JSON.parse(b).value))")
+          echo "$t" | cut -d. -f2 | node -e "let b='';process.stdin.on('data',c=>b+=c).on('end',()=>{const c=JSON.parse(Buffer.from(b.trim(),'base64url'));for(const k of ['iss','aud','repository','repository_id','repository_owner','repository_owner_id','workflow_ref','job_workflow_ref','environment','ref'])console.log(k,'=',c[k])})"
       - run: npx --yes ovsx publish easy-notifyyy.vsix --trusted-publishing
