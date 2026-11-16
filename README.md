@@ -30,7 +30,7 @@ Easy Notifyyy runs inside **Antigravity IDE**, **VS Code (GitHub Copilot)**, **K
 
 ## Screenshot at a glance
 
-![Screenshot](./screentshot.png)
+![Screenshot](https://raw.githubusercontent.com/gcclinux/easy-notifyyy/main/screenshot.png)
 
 ## Gmail App Password Setup (SMTP)
 
