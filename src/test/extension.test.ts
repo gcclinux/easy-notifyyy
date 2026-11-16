@@ -9,6 +9,7 @@ import { FocusStateTracker } from '../focusTracker';
 import {
   installAntigravityMcpConfig,
   installClaudeCodeHooks,
+  installKiroConfig,
 } from '../hookConfigFiles';
 import { NotificationCoordinator } from '../notificationCoordinator';
 import { LocalNotifyServer } from '../server';
@@ -483,4 +484,39 @@ test('EmailSender falls back to SMTP when Resend key is absent and normalizes po
   assert.equal(sentMessages.length, 1);
   assert.equal(sentMessages[0]?.to, 'dest@gmail.com');
   assert.equal(sentMessages[0]?.from, 'sender@gmail.com');
+});
+
+test('installKiroConfig writes hook, MCP entry and steering, preserves existing servers, and is idempotent', async () => {
+  const dir = await fsp.mkdtemp(path.join(os.tmpdir(), 'easy-notifyyy-kiro-'));
+  try {
+    const mcpConfigPath = path.join(dir, 'settings', 'mcp.json');
+    await fsp.mkdir(path.dirname(mcpConfigPath), { recursive: true });
+    await fsp.writeFile(
+      mcpConfigPath,
+      JSON.stringify({ mcpServers: { other: { command: 'x' } } }),
+      'utf8'
+    );
+    const paths = {
+      hooksDirs: [path.join(dir, 'hooks')],
+      mcpConfigPath,
+      steeringDir: path.join(dir, 'steering'),
+    };
+    await installKiroConfig('/tmp/dist/mcp-stdio.js', 47831, paths);
+    const result = await installKiroConfig('/tmp/dist/mcp-stdio.js', 47831, paths);
+
+    const hook = JSON.parse(await fsp.readFile(result.hookFiles[0], 'utf8'));
+    assert.equal(hook.version, 'v1');
+    assert.equal(hook.hooks.length, 1);
+    assert.equal(hook.hooks[0].trigger, 'Stop');
+    assert.match(hook.hooks[0].action.command, /source=kiro/);
+
+    const mcp = JSON.parse(await fsp.readFile(mcpConfigPath, 'utf8'));
+    assert.deepEqual(Object.keys(mcp.mcpServers).sort(), ['easy-notifyyy', 'other']);
+    assert.deepEqual(mcp.mcpServers['easy-notifyyy'].autoApprove, ['notify_user']);
+
+    const steering = await fsp.readFile(result.steeringFile, 'utf8');
+    assert.match(steering, /notify_user/);
+  } finally {
+    await fsp.rm(dir, { recursive: true, force: true });
+  }
 });

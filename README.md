@@ -58,7 +58,7 @@ If your sender Gmail account has **2-Step Verification** enabled, Google rejects
 | **Antigravity** | Watches Antigravity conversation transcripts for completed turns and `ask_question` prompts, plus one-click MCP `notify_user` tool setup. |
 | **GitHub Copilot / Cursor** | Watches workspace chat session files and triggers once an assistant response settles. |
 | **Claude Code** | One-click setup installs native `Stop` and `Notification` hooks into `~/.claude/settings.json`. |
-| **Kiro** | Includes a one-click copyable hook command (`POST /notify?source=kiro`) and MCP `notify_user` support. |
+| **Kiro** | One-click setup writes a `Stop` hook to `.kiro/hooks/` (global and workspace), registers the `notify_user` MCP tool in `~/.kiro/settings/mcp.json`, and adds a steering file so Kiro calls it when it needs your input. Reload Kiro's MCP servers afterwards. |
 | **Any MCP Agent** | Exposes a built-in `notify_user` MCP tool so agents can email you directly when finished or blocked. |
 | **Terminal Commands** | Automatically alerts you when long-running shell commands (default `15s` or longer) finish or fail. |
 

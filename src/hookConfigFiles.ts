@@ -180,3 +180,86 @@ export async function installAntigravityMcpConfig(
   await fs.writeFile(configPath, `${JSON.stringify(updated, null, 2)}\n`, 'utf8');
   return configPath;
 }
+
+export const KIRO_HOOK_FILE_NAME = 'easy-notifyyy.json';
+export const KIRO_STEERING_FILE_NAME = 'easy-notifyyy.md';
+
+const KIRO_STEERING_CONTENT = `---
+inclusion: always
+---
+
+# Easy Notifyyy
+
+If you are blocked and need the user to answer a question, approve something, or make a decision, call the \`notify_user\` tool (MCP server \`easy-notifyyy\`) with \`status: "needs_input"\` and a short summary before you stop and wait.
+
+You do not need to call it when you simply finish a task. A Stop hook already sends that notification.
+`;
+
+export interface KiroInstallPaths {
+  /** Directories that receive the Stop hook file (workspace and/or global). */
+  hooksDirs?: string[];
+  mcpConfigPath?: string;
+  steeringDir?: string;
+}
+
+export interface KiroInstallResult {
+  hookFiles: string[];
+  mcpConfigPath: string;
+  steeringFile: string;
+}
+
+export async function installKiroConfig(
+  mcpStdioPath: string,
+  defaultPort: number,
+  paths: KiroInstallPaths = {}
+): Promise<KiroInstallResult> {
+  const kiroHome = path.join(os.homedir(), '.kiro');
+  const hooksDirs = paths.hooksDirs ?? [path.join(kiroHome, 'hooks')];
+  const mcpConfigPath =
+    paths.mcpConfigPath ?? path.join(kiroHome, 'settings', 'mcp.json');
+  const steeringDir = paths.steeringDir ?? path.join(kiroHome, 'steering');
+
+  const hookFile = {
+    version: 'v1',
+    hooks: [
+      {
+        name: 'Easy Notifyyy - agent finished',
+        description: 'Emails you when Kiro finishes its turn.',
+        trigger: 'Stop',
+        action: {
+          type: 'command',
+          command: buildHookNotifyCommand(defaultPort, 'kiro'),
+        },
+      },
+    ],
+  };
+  const hookFiles: string[] = [];
+  for (const dir of hooksDirs) {
+    await fs.mkdir(dir, { recursive: true });
+    const target = path.join(dir, KIRO_HOOK_FILE_NAME);
+    await fs.writeFile(target, `${JSON.stringify(hookFile, null, 2)}\n`, 'utf8');
+    hookFiles.push(target);
+  }
+
+  const current = await readJsonObjectOrEmpty(mcpConfigPath);
+  const servers =
+    typeof current.mcpServers === 'object' && current.mcpServers !== null
+      ? { ...(current.mcpServers as Record<string, unknown>) }
+      : {};
+  servers['easy-notifyyy'] = {
+    command: 'node',
+    args: [mcpStdioPath],
+    autoApprove: ['notify_user'],
+  };
+  await fs.writeFile(
+    mcpConfigPath,
+    `${JSON.stringify({ ...current, mcpServers: servers }, null, 2)}\n`,
+    'utf8'
+  );
+
+  await fs.mkdir(steeringDir, { recursive: true });
+  const steeringFile = path.join(steeringDir, KIRO_STEERING_FILE_NAME);
+  await fs.writeFile(steeringFile, KIRO_STEERING_CONTENT, 'utf8');
+
+  return { hookFiles, mcpConfigPath, steeringFile };
+}

@@ -1,3 +1,4 @@
+import * as os from 'node:os';
 import * as path from 'node:path';
 import * as vscode from 'vscode';
 import {
@@ -5,6 +6,7 @@ import {
   buildMcpConfigSnippets,
   installAntigravityMcpConfig,
   installClaudeCodeHooks,
+  installKiroConfig,
 } from './hookConfigFiles';
 
 export {
@@ -12,7 +14,17 @@ export {
   buildMcpConfigSnippets,
   installAntigravityMcpConfig,
   installClaudeCodeHooks,
+  installKiroConfig,
 };
+
+export function getKiroHooksDirs(): string[] {
+  const dirs = [path.join(os.homedir(), '.kiro', 'hooks')];
+  const folder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+  if (folder) {
+    dirs.push(path.join(folder, '.kiro', 'hooks'));
+  }
+  return dirs;
+}
 
 export async function setupAgentHooksWizard(
   context: vscode.ExtensionContext,
@@ -31,6 +43,11 @@ export async function setupAgentHooksWizard(
         id: 'claude',
         label: '$(terminal) Install Claude Code Stop & Notification Hooks',
         description: 'Writes Stop + Notification hooks to ~/.claude/settings.json',
+      },
+      {
+        id: 'kiro',
+        label: '$(zap) Install Kiro Hook, MCP Server & Steering (~/.kiro)',
+        description: 'Stop hook + notify_user MCP tool for Kiro',
       },
       {
         id: 'mcp-doc',
@@ -85,6 +102,23 @@ export async function setupAgentHooksWizard(
     return;
   }
 
+  if (pick.id === 'kiro') {
+    try {
+      const result = await installKiroConfig(
+        mcpStdioPath,
+        serverPort,
+        { hooksDirs: getKiroHooksDirs() }
+      );
+      void vscode.window.showInformationMessage(
+        `Easy Notifyyy Kiro setup done. Hook: ${result.hookFiles.join(', ')}. MCP: ${result.mcpConfigPath}. Restart Kiro or reload its MCP servers to apply.`
+      );
+    } catch (err) {
+      void vscode.window.showErrorMessage(
+        `Failed to install Kiro config: ${err instanceof Error ? err.message : String(err)}`
+      );
+    }
+    return;
+  }
   if (pick.id === 'mcp-doc') {
     const content = buildMcpConfigSnippets(mcpStdioPath, serverPort);
     const doc = await vscode.workspace.openTextDocument({

@@ -6,7 +6,9 @@ import {
   buildHookNotifyCommand,
   installAntigravityMcpConfig,
   installClaudeCodeHooks,
+  installKiroConfig,
 } from './hookConfigFiles';
+import { getKiroHooksDirs } from './hookInstaller';
 import {
   EmailProviderType,
   ExtensionConfig,
@@ -523,6 +525,9 @@ export function getSettingsHtml(
         <button id="installClaudeBtn" type="button" class="secondary">
           ⚡ Auto-Configure Claude Code Hooks (~/.claude/settings.json)
         </button>
+        <button id="installKiroBtn" type="button" class="secondary">
+          ⚡ Auto-Configure Kiro Hook &amp; MCP (~/.kiro)
+        </button>
         <button id="copyKiroBtn" type="button" class="secondary">
           📋 Copy Kiro Hook Notification Command
         </button>
@@ -674,6 +679,9 @@ export function getSettingsHtml(
         vscode.postMessage({ type: 'installClaudeHooks' });
       });
 
+      el('installKiroBtn').addEventListener('click', () => {
+        vscode.postMessage({ type: 'installKiro' });
+      });
       el('copyKiroBtn').addEventListener('click', () => {
         vscode.postMessage({ type: 'copyKiroHook' });
       });
@@ -799,6 +807,27 @@ async function handleWebviewMessage(
       return;
     }
 
+    case 'installKiro': {
+      try {
+        const result = await installKiroConfig(
+          mcpStdioPath,
+          deps.getActivePort(),
+          { hooksDirs: getKiroHooksDirs() }
+        );
+        await webview.postMessage({
+          type: 'result',
+          ok: true,
+          message: `Kiro configured. Hook: ${result.hookFiles.join(', ')}; MCP: ${result.mcpConfigPath}. Reload Kiro MCP servers to apply.`,
+        });
+      } catch (err) {
+        await webview.postMessage({
+          type: 'result',
+          ok: false,
+          message: err instanceof Error ? err.message : String(err),
+        });
+      }
+      return;
+    }
     case 'copyKiroHook': {
       const cmd = buildHookNotifyCommand(deps.getActivePort(), 'kiro');
       await vscode.env.clipboard.writeText(cmd);
