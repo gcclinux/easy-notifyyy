@@ -21,5 +21,6 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
+      - run: npm run build
       - run: npm run package:vsix -- --out easy-notifyyy.vsix
       - run: npx --yes ovsx publish easy-notifyyy.vsix --trusted-publishing
