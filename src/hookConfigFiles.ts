@@ -11,7 +11,7 @@ export function buildHookNotifyCommand(
     "const fs=require('fs'),os=require('os'),p=require('path');",
     "let b='';",
     "process.stdin.on('data',c=>b+=c);",
-    'process.stdin.on("end",async()=>{',
+    "process.stdin.on('end',async()=>{",
     `let port=${defaultPort};`,
     "try{port=JSON.parse(fs.readFileSync(p.join(os.homedir(),'.easy-notifyyy','server.json'),'utf8')).port||port}catch{}",
     `await fetch('http://127.0.0.1:'+port+'/notify${query}',{method:'POST',headers:{'Content-Type':'application/json'},body:b||'{}'}).catch(()=>{});`,

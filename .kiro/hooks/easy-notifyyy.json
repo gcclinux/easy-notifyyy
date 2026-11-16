@@ -7,7 +7,7 @@
       "trigger": "Stop",
       "action": {
         "type": "command",
-        "command": "node -e \"const fs=require('fs'),os=require('os'),p=require('path');let b='';process.stdin.on('data',c=>b+=c);process.stdin.on(\"end\",async()=>{let port=47831;try{port=JSON.parse(fs.readFileSync(p.join(os.homedir(),'.easy-notifyyy','server.json'),'utf8')).port||port}catch{}await fetch('http://127.0.0.1:'+port+'/notify?source=kiro',{method:'POST',headers:{'Content-Type':'application/json'},body:b||'{}'}).catch(()=>{});});\""
+        "command": "node -e \"const fs=require('fs'),os=require('os'),p=require('path');let b='';process.stdin.on('data',c=>b+=c);process.stdin.on('end',async()=>{let port=47831;try{port=JSON.parse(fs.readFileSync(p.join(os.homedir(),'.easy-notifyyy','server.json'),'utf8')).port||port}catch{}await fetch('http://127.0.0.1:'+port+'/notify?source=kiro',{method:'POST',headers:{'Content-Type':'application/json'},body:b||'{}'}).catch(()=>{});});\""
       }
     }
   ]

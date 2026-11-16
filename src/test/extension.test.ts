@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { execSync } from 'node:child_process';
 import * as fsp from 'node:fs/promises';
 import * as os from 'node:os';
 import * as path from 'node:path';
@@ -7,6 +8,7 @@ import { parseAntigravityTranscriptLine } from '../detectors/antigravityDetector
 import { EmailSender, formatNotificationEmail } from '../emailSender';
 import { FocusStateTracker } from '../focusTracker';
 import {
+  buildHookNotifyCommand,
   installAntigravityMcpConfig,
   installClaudeCodeHooks,
   installKiroConfig,
@@ -484,6 +486,17 @@ test('EmailSender falls back to SMTP when Resend key is absent and normalizes po
   assert.equal(sentMessages.length, 1);
   assert.equal(sentMessages[0]?.to, 'dest@gmail.com');
   assert.equal(sentMessages[0]?.from, 'sender@gmail.com');
+});
+
+test('generated hook commands execute through the shell', () => {
+  for (const source of ['claude', 'kiro'] as const) {
+    const command = buildHookNotifyCommand(47831, source).replace(
+      'await fetch(',
+      'await Promise.resolve('
+    );
+    assert.match(command, new RegExp(`source=${source}`));
+    execSync(command, { input: '{}', stdio: 'pipe' });
+  }
 });
 
 test('installKiroConfig writes hook, MCP entry and steering, preserves existing servers, and is idempotent', async () => {
